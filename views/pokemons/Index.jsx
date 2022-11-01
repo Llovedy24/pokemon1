@@ -1,18 +1,39 @@
-const mongoose = require('mongoose')
+const React = require('react')
+const Default = require('../layouts/Default.jsx')
 
-// Make A Schema
-const pokemonSchema = new mongoose.Schema({
-    name: { type: String, required: true},
-    color: { type: String, required: true},
-    readyToEat: Boolean
-})
+class Index extends React.Component {
+  render () {
+    const { pokemons } = this.props
+    return (
+      <Default title='Pokemons Index Page'>
+        <ul>
+          {
+                        pokemons.map((pokemon) => {
+                          const { name, strength, isStronger, _id } = pokemon
+                          return (
+                            <li key={_id}>
+                              <a href={`/logs/${_id}`}>
+                                {name}
+                              </a> is {strength}
 
-// Make A Model From The Schema
+                              <br />
+                              {
+                                        isStronger
+                                          ? 'It\'s stronger'
+                                          : 'It\'s not stronger'
+                                    }
+                              <br />
+                              <form method='POST' action={`/pokemons/${_id}?_method=DELETE`}>
+                                <input type='submit' value={`Delete ${strength} ${name}`} />
+                              </form>
+                            </li>
+                          )
+                        })
+                    }
+        </ul>
+      </Default>
+    )
+  }
+}
 
-const Pokemon = mongoose.model('Pokemon', pokemonSchema)
-
-
-// Export The Model For Use In The App
-
-module.exports = Pokemon
-
+module.exports = Index
